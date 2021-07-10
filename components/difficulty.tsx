@@ -1,0 +1,31 @@
+import React from 'react';
+import { StyleSheet, View } from 'react-native';
+import { Avatar } from 'react-native-paper';
+ 
+export const Difficulty = ({value}):JSX.Element => {
+
+    let color = 'red';
+    if (value === 1) {
+        color = 'green';
+    } else if ( value === 2) {
+        color = 'yellow';
+    }
+
+    return (
+        <View style={styles.container}>
+          { [...Array(value)].map( (element,index) => <Avatar.Icon 
+            size={16} 
+            icon='chef-hat' 
+            key={index}
+            style={{backgroundColor:color}}
+            /> )}
+        </View>
+    );
+}
+
+
+const styles = StyleSheet.create({
+    container: {
+        flexDirection:"row"
+  }
+});
