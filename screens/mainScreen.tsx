@@ -1,39 +1,18 @@
-import React,{useState,useEffect} from 'react';
-import { FlatList, StyleSheet, SafeAreaView, TouchableOpacity} from 'react-native';
-import { Card } from "../components/card";
-import { Search } from '../components/search';
+import React from 'react';
+import { createStackNavigator } from '@react-navigation/stack';
+import { NavigationContainer } from '@react-navigation/native';
+import { RecipeListScreen } from "./recipeListScreen";
+import { RecipeScreen } from "./recipeScreen";
 
-export const MainScreen = ({navigation}):JSX.Element => {
-    const [foodList,setList] = useState([]);
+const Stack = createStackNavigator();
 
-    useEffect(() => {
-      fetch("https://recetasserver.herokuapp.com/api/recipes")
-      .then(response => response.json())
-      .then(data => setList(data));
-    },[]);
-  
+export const MainScreen = ():JSX.Element => {
     return (
-      <SafeAreaView style={styles.container}>
-        <Search />
-        <FlatList
-          showsHorizontalScrollIndicator={false}
-          keyExtractor={ ({_id}) => _id }
-          data={ foodList }
-          numColumns={2}
-          renderItem={({ item }) => {
-            return <TouchableOpacity onPress={()=> navigation.navigate('Recipe',item)}>
-                <Card key={item._id} recipe={item} />
-              </TouchableOpacity>
-          }}
-        />
-      </SafeAreaView>
+      <NavigationContainer independent={true}>      
+          <Stack.Navigator>
+            <Stack.Screen name="Home" component={RecipeListScreen} options={{title:'Cooking Book'}} />
+            <Stack.Screen name="Recipe" component={RecipeScreen}  options={({ route }) => ({ title: route.params.name })} />
+          </Stack.Navigator>
+      </NavigationContainer>
     );
 }
-
-const styles = StyleSheet.create({
-    container: {
-      backgroundColor: '#fff',
-      alignItems: 'center',
-      flex:1,
-    },
-  });

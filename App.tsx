@@ -1,24 +1,29 @@
 import * as React from 'react';
-import { NavigationContainer } from '@react-navigation/native';
-import { createStackNavigator } from '@react-navigation/stack';
-import { MainScreen } from "./screens/mainScreen";
-import { RecipeScreen } from "./screens/recipeScreen";
-import { Provider as PaperProvder} from 'react-native-paper';
+import { Provider as PaperProvider, BottomNavigation} from 'react-native-paper';
 import {AppRegistry} from 'react-native';
 import { name as appName } from './app.json';
-
-const Stack = createStackNavigator();
+import { MainScreen }  from "./screens/mainScreen";
+import { ShoppingListScreen } from "./screens/shoppingListScreen";
 
 function App() {
+  const [index, setIndex] = React.useState(0);
+  const [routes] = React.useState([
+    { key: 'recipes', title: 'Recetas', icon: 'notebook-outline' },
+    { key: 'shopping', title: 'Compra', icon: 'basket' },
+  ]);
+
+  const renderScene = BottomNavigation.SceneMap({
+    recipes: MainScreen,
+    shopping: ShoppingListScreen,
+  });
   return (
-    <PaperProvder>
-      <NavigationContainer>
-        <Stack.Navigator>
-          <Stack.Screen name="Home" component={MainScreen} options={{title:'Cooking Book'}} />
-          <Stack.Screen name="Recipe" component={RecipeScreen}  options={({ route }) => ({ title: route.params.name })} />
-        </Stack.Navigator>
-      </NavigationContainer>
-    </PaperProvder>
+    <PaperProvider>
+      <BottomNavigation
+        navigationState={{ index, routes }}
+        onIndexChange={setIndex}
+        renderScene={renderScene}
+      />
+    </PaperProvider>
   );
 }
 
