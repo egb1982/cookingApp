@@ -20,7 +20,7 @@ export const Card = ({recipe}):JSX.Element => {
                 <Difficulty value={recipe.difficulty}/>
             </ImageBackground>
             <View style={styles.cardBody}>
-               <Text>{recipe.category}</Text>                
+               <Text numberOfLines={2} ellipsizeMode={'tail'}>{recipe.category}</Text>                
             </View>
         </View>
     )
@@ -41,6 +41,7 @@ const styles = StyleSheet.create({
     },
     cardBody: {
      padding:5,
+     height:45,
     },
     cardHeader: {
         fontSize:25,
