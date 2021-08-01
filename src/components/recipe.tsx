@@ -1,6 +1,6 @@
 import React from 'react';
 import { StyleSheet, Text, TouchableOpacity} from 'react-native';
-import { List, Button } from 'react-native-paper';
+import { List } from 'react-native-paper';
 
 type RecipeProps = {
     ingredients:Array<Object>;

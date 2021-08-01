@@ -1,8 +1,8 @@
 
 import React,{useState,useEffect} from 'react';
 import { FlatList, StyleSheet, SafeAreaView, TouchableOpacity} from 'react-native';
-import { Card } from "../components/card";
-import { Search } from '../components/search';
+import { Card } from "./card";
+import { Search } from './search';
 
 export const RecipesList = ({navigation}):JSX.Element => {
 
