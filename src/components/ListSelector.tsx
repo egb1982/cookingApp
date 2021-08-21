@@ -1,28 +1,24 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import { FlatList,TouchableHighlight,StyleSheet } from "react-native";
 import { List, Divider, Colors} from 'react-native-paper';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Swipeable } from "react-native-gesture-handler";
 import { ListNameModal } from "./ListNameModal";
 import { FloatingButton } from './floatingButton';
+import { db } from '../database/database';
 
 export const ListSelector = ({navigation}):JSX.Element => {
 
-    const [shoppingLists,setShoppingLists] = useState([{_id:'7489237423894', 
-                                                        name:'Compra Tegut', 
-                                                        articles: [
-                                                          {_id: '435435543', name:'Harina',quantity:'1 kilo'},
-                                                          {_id: '435343455', name:'Huevos',quantity:'1 docena'},
-                                                          {_id: '756546445', name:'Leche',quantity:'1 Litro'},
-                                                        ] },
-                                                        {_id:'753465743756', 
-                                                        name:'Compra Lidl', 
-                                                        articles: [
-                                                          {_id: '321322314', name:'Salmón',quantity:'250 gr.'},
-                                                          {_id: '576535431', name:'Pan',quantity:'3 Paquetes'},
-                                                          {_id: '123987452', name:'Arróz',quantity:'1 kilo'},
-                                                        ] }
-                                                    ]);
+    const [shoppingLists,setShoppingLists] = useState([]);
+
+    useEffect(() => {
+      db.transaction((tx) => {
+        tx.executeSql('CREATE TABLE IF NOT EXISTS shopList(id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT)');
+        tx.executeSql("SELECT * FROM shopList", [], (_, { rows:{ _array } }) => { setShoppingLists(_array); console.log(_array); });
+        
+        //tx.executeSql('CREATE table IF NOT EXISTS articles(id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT, listId INTEGER FOREIGN KEY REFERENCES shopList(id))');
+      })
+    },[]);
 
     const [modal, setModal] = useState({visible:false,name:'',id:''});          
     
@@ -35,21 +31,42 @@ export const ListSelector = ({navigation}):JSX.Element => {
 
     const handleListNameChange = () => {
       if (modal.id != ''){
-        const currentList = shoppingLists.find( list => list._id === modal.id );
+        const currentList = shoppingLists.find( list => list.id === modal.id );
         if (currentList) {
           currentList.name = modal.name;
-          setShoppingLists([...filterById(currentList._id),currentList]);
+
+          db.transaction(
+            (tx) => {
+              tx.executeSql("UPDATE shopList SET name = ? WHERE id = ?", [currentList.name,currentList.id]);
+            },
+            null,
+            () => setShoppingLists([...filterById(currentList.id),currentList])
+          );
         }  
       } else {
-        const id = new Date;
-        setShoppingLists([...shoppingLists, {_id:id.toString(), name:modal.name, articles:[]}]);
+        //setShoppingLists([...shoppingLists, {_id:id.toString(), name:modal.name, articles:[]}]);
+
+        db.transaction(
+          (tx) => {
+            tx.executeSql("INSERT INTO shopList (name) values (?)", [modal.name]);
+            tx.executeSql("SELECT * FROM shopList", [], (_, { rows:{ _array } }) => setShoppingLists(_array));
+          },
+        );
       }
       hideModal();
     }
     
-    const filterById = (id:string):Array<any> => shoppingLists.filter(list => list._id !== id)
-
-    const deleteById = (id:string) => setShoppingLists( filterById(id) )
+    const filterById = (id:string):Array<any> => shoppingLists.filter(list => list.id !== id)
+    
+    const deleteById = (id:string) => {
+      db.transaction(
+        (tx) => {
+          tx.executeSql(`DELETE FROM shopList WHERE id = ?;`, [id]);
+        },
+        null,
+        () => setShoppingLists( filterById(id) )
+      )
+    }
     
     const renderDeleteAction = () => {
         return <List.Item title={''} style={styles.deleteSwipeList} 
@@ -67,15 +84,15 @@ export const ListSelector = ({navigation}):JSX.Element => {
                 <Divider />
                 <FlatList
                     showsVerticalScrollIndicator={false}
-                    keyExtractor={ ({_id}) => _id }
+                    keyExtractor={ ({id}) => id }
                     data={ shoppingLists }
                     renderItem={({ item, index }) => {
                                 
                         return  <>
                                   <Swipeable useNativeAnimations 
                                               renderRightActions={renderDeleteAction} 
-                                              renderLeftActions={()=>renderEditAction(item._id,item.name)}
-                                              onSwipeableRightOpen={()=>deleteById(item._id)}
+                                              renderLeftActions={()=>renderEditAction(item.id,item.name)}
+                                              onSwipeableRightOpen={()=>deleteById(item.id)}
                                               overshootLeft={false}
                                               ref={ref => listRow[index] = ref}
                                               >
