@@ -12,17 +12,24 @@ export const ListSelector = ({navigation}):JSX.Element => {
     const [shoppingLists,setShoppingLists] = useState([]);
 
     useEffect(() => {
-      db.transaction((tx) => {
-        tx.executeSql('CREATE TABLE IF NOT EXISTS shopList(id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT)');
-        tx.executeSql("SELECT * FROM shopList", [], (_, { rows:{ _array } }) => { setShoppingLists(_array); console.log(_array); });
-        
-        //tx.executeSql('CREATE table IF NOT EXISTS articles(id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT, listId INTEGER FOREIGN KEY REFERENCES shopList(id))');
-      })
-    },[]);
+      db.transaction(async (tx) => {
+        await tx.executeSql('CREATE TABLE IF NOT EXISTS shopList(id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT)');
+      },
+      (err) => console.log(err),
+      async () => await getShoppingLists()
+    )},[]);
 
     const [modal, setModal] = useState({visible:false,name:'',id:''});          
     
     let listRow:Array<any> = [];
+
+    const getShoppingLists = async () =>
+    {
+        db.transaction(async (tx) => {
+          await tx.executeSql("SELECT * FROM shopList", [], (_, { rows:{ _array } }) => { setShoppingLists(_array); console.log(_array); });
+        })
+    }
+
 
     const hideModal = () => { 
       setModal({visible:false,name:'',id:''}); 
@@ -31,26 +38,25 @@ export const ListSelector = ({navigation}):JSX.Element => {
 
     const handleListNameChange = () => {
       if (modal.id != ''){
-        const currentList = shoppingLists.find( list => list.id === modal.id );
+        const currentList = shoppingLists.find(list => list.id === modal.id );
         if (currentList) {
           currentList.name = modal.name;
 
           db.transaction(
-            (tx) => {
-              tx.executeSql("UPDATE shopList SET name = ? WHERE id = ?", [currentList.name,currentList.id]);
+            async (tx) => {
+              await tx.executeSql("UPDATE shopList SET name = ? WHERE id = ?", [currentList.name,currentList.id]);
             },
-            null,
+            (err) => console.log(err),
             () => setShoppingLists([...filterById(currentList.id),currentList])
           );
         }  
       } else {
-        //setShoppingLists([...shoppingLists, {_id:id.toString(), name:modal.name, articles:[]}]);
-
         db.transaction(
-          (tx) => {
-            tx.executeSql("INSERT INTO shopList (name) values (?)", [modal.name]);
-            tx.executeSql("SELECT * FROM shopList", [], (_, { rows:{ _array } }) => setShoppingLists(_array));
+          async (tx) => {
+            await tx.executeSql("INSERT INTO shopList (name) values (?)", [modal.name]);
           },
+          (err) => console.log(err),
+          async () => await getShoppingLists()
         );
       }
       hideModal();
@@ -63,7 +69,7 @@ export const ListSelector = ({navigation}):JSX.Element => {
         (tx) => {
           tx.executeSql(`DELETE FROM shopList WHERE id = ?;`, [id]);
         },
-        null,
+        (err) => console.log(err),
         () => setShoppingLists( filterById(id) )
       )
     }
@@ -84,7 +90,7 @@ export const ListSelector = ({navigation}):JSX.Element => {
                 <Divider />
                 <FlatList
                     showsVerticalScrollIndicator={false}
-                    keyExtractor={ ({id}) => id }
+                    keyExtractor={ ({id}) => `list_${id}` }
                     data={ shoppingLists }
                     renderItem={({ item, index }) => {
                                 

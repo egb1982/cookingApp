@@ -10,8 +10,12 @@ export const ShoppingListScreen = ():JSX.Element => {
     return (
       <NavigationContainer independent={true}>      
           <Stack.Navigator>
-            <Stack.Screen name="ShoppingLists" component={ListSelector} options={{title:'Listas de la compra'}} />
-            <Stack.Screen name="List" component={ShoppingList} options={({route}) => ({title:route?.params?.name})} />
+            <Stack.Screen name="ShoppingLists" 
+                          component={ListSelector} 
+                          options={{title:'Listas de la compra'}} />
+            <Stack.Screen name="List" 
+                          component={ShoppingList} 
+                          options={ ({route}) => ({title:route?.params?.name})} />
           </Stack.Navigator>
       </NavigationContainer>
     );
