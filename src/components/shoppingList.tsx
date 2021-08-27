@@ -27,7 +27,7 @@ export const ShoppingList = ({route, navigation}):JSX.Element => {
             <Button  icon="delete-sweep" onPress={()=> cleanCheckedArticles() } >limpiar</Button> 
           ),
         });
-      }, [navigation]);
+    }, [navigation]);
 
 
 

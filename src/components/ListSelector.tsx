@@ -26,10 +26,9 @@ export const ListSelector = ({navigation}):JSX.Element => {
     const getShoppingLists = async () =>
     {
         db.transaction(async (tx) => {
-          await tx.executeSql("SELECT * FROM shopList", [], (_, { rows:{ _array } }) => { setShoppingLists(_array); console.log(_array); });
+          await tx.executeSql("SELECT * FROM shopList", [], (_, { rows:{ _array } }) => setShoppingLists(_array));
         })
     }
-
 
     const hideModal = () => { 
       setModal({visible:false,name:'',id:''}); 
