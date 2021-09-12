@@ -38,12 +38,12 @@ export const Recipe = ({ingredients,
     }
 
     const setDefaultSelectedList = ()=> {
-        setLists(lists.filter(list => list.id !==0))
-        const recipeShopList = lists.find( item => item.name === recipeName );
+        const actualLists = lists.filter(list => list.id > 0);
+        const recipeShopList = actualLists.find( item => item.name === recipeName );
         (recipeShopList) ? 
             setChecked(recipeShopList.id)
         : 
-            setLists([{id:0, name:`Nueva lista (${recipeName})`}, ...lists ]);
+            setLists([{id:0, name:`Nueva lista (${recipeName})`}, ...actualLists ]);
     }
 
     const showDialog = () => setVisible(true);
@@ -100,6 +100,7 @@ export const Recipe = ({ingredients,
                                                                                 description={<Text>{step.description}</Text>} 
                                                                                 key={`step_${step._id}`}
                                                                                 style={styles.steps}
+                                                                                descriptionNumberOfLines={0}
                                                                                 />)
                                         :null
                             }

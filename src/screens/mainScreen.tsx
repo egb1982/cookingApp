@@ -10,7 +10,7 @@ export const MainScreen = ():JSX.Element => {
     return (
       <NavigationContainer independent={true}>      
           <Stack.Navigator>
-            <Stack.Screen name="Home" component={RecipeListScreen} options={{title:'Cooking Book'}} />
+            <Stack.Screen name="Home" component={RecipeListScreen} options={{title:'Libro de recetas'}} />
             <Stack.Screen name="Recipe" component={RecipeScreen}  options={({ route }) => ({ title: route.params.name })} />
           </Stack.Navigator>
       </NavigationContainer>
