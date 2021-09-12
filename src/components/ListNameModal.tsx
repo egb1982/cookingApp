@@ -27,8 +27,8 @@ export const ListNameModal = ({id,name,visible,hideModal,onChangeName,onAccept}:
                 onChangeText={onChangeName}
                 placeholder='Escribe un nombre para la lista'/>
             <View style={styles.modalButtons}>
-                <Button onPress={onAccept}>Aceptar</Button>
                 <Button onPress={hideModal}>Cancelar</Button>
+                <Button mode="contained" onPress={onAccept}>Aceptar</Button>
             </View>    
         </Modal>
     );
@@ -39,5 +39,6 @@ const styles = StyleSheet.create({
     modalButtons:{
         flexDirection:'row',
         justifyContent:'space-between',
+        marginTop:10,
     }
 })
