@@ -1,7 +1,11 @@
-import React from 'react';
-import {RecipesList} from '../components/recipesList'
+import { useNavigation } from "@react-navigation/core"
+import React from "react"
+import { RecipesList } from "../components/recipesList"
+import { Recipe } from "../components/types"
 
-export const RecipeListScreen = ({navigation}) => {
+export const RecipeListScreen: React.FC = () => {
+  const navigation = useNavigation()
+  const goToRecipe = (item: Recipe) => navigation.navigate("Recipe", item)
 
-    return <RecipesList navigation={navigation} />
+  return <RecipesList onGoToRecipe={goToRecipe} />
 }

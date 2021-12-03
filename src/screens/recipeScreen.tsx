@@ -1,29 +1,32 @@
-import React, {useState} from 'react';
-import { StyleSheet } from 'react-native';
-import { Recipe } from '../components/recipe';
+import { RouteProp } from "@react-navigation/core"
+import React, { useState } from "react"
+import { Recipe } from "../components/recipe"
+import { Ingredient, Step } from "../components/types"
 
-
-export const RecipeScreen = ({route}):JSX.Element => {
-
-    const [ingredientsExpanded, setIngredientsExpanded] = useState(true);
-    const [stepsExpanded, setStepsExpanded] = useState(true);
-    const { ingredients, steps, name } = route.params;
-
-    return <Recipe ingredients={ingredients} 
-                    steps={steps} 
-                    stepsExpanded={stepsExpanded}
-                    ingredientsExpanded={ingredientsExpanded}
-                    setIngredientsExpanded={setIngredientsExpanded}
-                    setStepsExpanded={setStepsExpanded}
-                    recipeName={name}
-
-            />
+type RecipeScreenProps = {
+  route: RouteProp<
+    { params: { ingredients: Ingredient[]; steps: Step[]; name: string } },
+    "params"
+  >
 }
 
-const styles = StyleSheet.create({
-    container: {
-      backgroundColor: '#fff',
-      alignItems: 'stretch',
-      flex:1,
-    }
-  });
+export const RecipeScreen: React.FC<RecipeScreenProps> = ({
+  route: {
+    params: { ingredients, steps, name }
+  }
+}) => {
+  const [ingredientsExpanded, setIngredientsExpanded] = useState(true)
+  const [stepsExpanded, setStepsExpanded] = useState(true)
+
+  return (
+    <Recipe
+      ingredients={ingredients}
+      steps={steps}
+      stepsExpanded={stepsExpanded}
+      ingredientsExpanded={ingredientsExpanded}
+      setIngredientsExpanded={setIngredientsExpanded}
+      setStepsExpanded={setStepsExpanded}
+      recipeName={name}
+    />
+  )
+}
