@@ -1,4 +1,5 @@
 import { StyleSheet } from "react-native"
+import { red600 } from "react-native-paper/lib/typescript/styles/colors"
 
 export const styles = StyleSheet.create({
   card: {
@@ -34,6 +35,11 @@ export const styles = StyleSheet.create({
   container: {
     backgroundColor: "#fff",
     alignItems: "stretch",
+    flex: 1
+  },
+  containerCenter: {
+    backgroundColor: "#fff",
+    alignItems: "center",
     flex: 1
   },
   checkSwipeList: {

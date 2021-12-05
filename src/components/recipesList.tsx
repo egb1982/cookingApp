@@ -30,7 +30,7 @@ export const RecipesList = ({
   }
 
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView style={styles.containerCenter}>
       <Search term={term} onChangeSearch={setTerm} onTermSend={handleSearch} />
       <FlatList
         showsVerticalScrollIndicator={false}

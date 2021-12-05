@@ -1,116 +1,52 @@
 import { RouteProp, useNavigation } from "@react-navigation/core"
-import React, { useState, useEffect } from "react"
+import React, { useState } from "react"
 import { SafeAreaView, ScrollView, StyleSheet } from "react-native"
 import { List, Button, TextInput } from "react-native-paper"
-import { db } from "../database/database"
 import { Article } from "./article"
-import { Article as ArticleType } from "./types"
+import { useListItems } from "../hooks/useListItems"
 
 type ShoppingListProps = {
-  route: RouteProp<{ params: { id: string } }, "params">
+  route: RouteProp<{ params: { id: number } }, "params">
 }
 
-export const ShoppingList: React.FC<ShoppingListProps> = ({
-  route
-}): JSX.Element => {
+export const ShoppingList: React.FC<ShoppingListProps> = ({ route }) => {
   const navigation = useNavigation()
-  const [articles, setArticles] = useState<ArticleType[]>([])
-  const [newArticle, setNewArticle] = React.useState("")
-
   const listId = route.params.id
+  const {
+    listArticles,
+    createListItem,
+    changeItemCheck,
+    deleteListItem,
+    cleanAllChecked
+  } = useListItems(listId)
 
-  useEffect(() => {
-    db.transaction(
-      async (tx) => {
-        await tx.executeSql(
-          "CREATE TABLE IF NOT EXISTS articles(id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT, checked BOOLEAN, listId INTEGER, FOREIGN KEY (listId) REFERENCES shopList(id))"
-        )
-      },
-      (err) => console.log(err),
-      async () => await getArticles()
-    )
-  }, [])
+  const [newArticle, setNewArticle] = useState("")
 
   React.useLayoutEffect(() => {
     navigation.setOptions({
       headerRight: () => (
-        <Button icon="delete-sweep" onPress={() => cleanCheckedArticles()}>
+        <Button icon="delete-sweep" onPress={cleanCheckedArticles}>
           limpiar
         </Button>
       )
     })
   }, [navigation])
 
-  const getArticles = async () => {
-    db.transaction(
-      async (tx) => {
-        await tx.executeSql(
-          "SELECT * FROM articles WHERE listId = ? ",
-          [listId],
-          (_, { rows: { _array } }) => setArticles(_array)
-        )
-      },
-      (err) => console.error(err)
-    )
-  }
-
-  const cleanCheckedArticles = async () => {
-    db.transaction(
-      (tx) => {
-        tx.executeSql(
-          "DELETE FROM articles WHERE listId = ? AND checked = ? ",
-          [listId, 1]
-        )
-      },
-      (err) => console.error(err),
-      async () => {
-        await getArticles()
-        setArticles((prevArticles) =>
-          prevArticles.filter((item) => item.checked === !!0)
-        )
-      }
-    )
+  const cleanCheckedArticles = () => {
+    cleanAllChecked(listId)
   }
 
   const handleNewArticle = () => {
-    if (newArticle !== "") {
-      db.transaction(
-        async (tx) => {
-          await tx.executeSql(
-            "INSERT INTO articles (name, checked, listId) values (?,?,?)",
-            [newArticle, 0, listId]
-          )
-        },
-        (err) => console.error(err),
-        async () => {
-          setNewArticle("")
-          await getArticles()
-        }
-      )
-    }
+    createListItem(newArticle, listId)
+    setNewArticle("")
   }
 
-  const handleCheckArticle = (id: number, value: boolean) => {
-    db.transaction(
-      async (tx) => {
-        await tx.executeSql("UPDATE articles SET checked = ? WHERE id = ?", [
-          value,
-          id
-        ])
-      },
-      (err) => console.error(err),
-      async () => await getArticles()
-    )
+  const handleCheckArticle = (id: number, value: number) => {
+    changeItemCheck(value, id, listId)
   }
 
   const handleDeleteArticle = (id: number) => {
-    db.transaction(
-      async (tx) => {
-        await tx.executeSql("DELETE FROM articles WHERE id = ?", [id])
-      },
-      (err) => console.error(err),
-      () => setArticles(articles.filter((item) => item.id !== id))
-    )
+    deleteListItem(id, listId)
   }
 
   let textInput: any = null
@@ -119,15 +55,15 @@ export const ShoppingList: React.FC<ShoppingListProps> = ({
     <SafeAreaView style={styles.container}>
       <ScrollView>
         <List.Section>
-          {articles
-            ? articles
+          {listArticles
+            ? listArticles
                 .filter((element) => !element.checked)
                 .map((item) => (
                   <Article
                     key={`${item.id}`}
                     item={item}
                     onPressCheckbox={(id, value) =>
-                      handleCheckArticle(id, value)
+                      handleCheckArticle(id, +value)
                     }
                     onSwipeDelete={(id) => handleDeleteArticle(id)}
                   />
@@ -147,15 +83,15 @@ export const ShoppingList: React.FC<ShoppingListProps> = ({
           }
         />
         <List.Section>
-          {articles
-            ? articles
+          {listArticles
+            ? listArticles
                 .filter((element) => element.checked)
                 .map((item) => (
                   <Article
                     key={`${item.id}`}
                     item={item}
                     onPressCheckbox={(id, value) =>
-                      handleCheckArticle(id, value)
+                      handleCheckArticle(id, +value)
                     }
                     onSwipeDelete={(id) => handleDeleteArticle(id)}
                   />

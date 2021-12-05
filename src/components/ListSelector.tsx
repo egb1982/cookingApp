@@ -1,97 +1,47 @@
-import React, { useState, useEffect } from "react"
+import React, { useState } from "react"
 import { FlatList, TouchableHighlight } from "react-native"
 import { List, Divider, Colors } from "react-native-paper"
 import { SafeAreaView } from "react-native-safe-area-context"
 import { Swipeable } from "react-native-gesture-handler"
 import { ListNameModal } from "./ListNameModal"
 import { FloatingButton } from "./floatingButton"
-import { db } from "../database/database"
 import { useNavigation } from "@react-navigation/core"
 import { styles } from "./styles"
-import { List as ListType } from "./types"
+import { List as ListType, ModalProps } from "./types"
+import { useLists } from "../hooks/useLists"
 
 export const ListSelector: React.FC = () => {
   const navigation = useNavigation()
-
-  const [shoppingLists, setShoppingLists] = useState<ListType[]>([])
-
-  useEffect(() => {
-    db.transaction(
-      async (tx) => {
-        await tx.executeSql(
-          "CREATE TABLE IF NOT EXISTS shopList(id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT)"
-        )
-      },
-      (err) => console.log(err),
-      async () => await getShoppingLists()
-    )
-  }, [])
-
-  const [modal, setModal] = useState({ visible: false, name: "", id: "" })
+  const { lists, createList, renameList, deleteList } = useLists()
+  const [modal, setModal] = useState<ModalProps>({
+    visible: false,
+    listId: 0,
+    listName: ""
+  })
 
   let listRow: Array<any> = []
 
-  const getShoppingLists = async () => {
-    db.transaction(async (tx) => {
-      await tx.executeSql(
-        "SELECT * FROM shopList",
-        [],
-        (_, { rows: { _array } }) => setShoppingLists(_array)
-      )
-    })
-  }
-
   const hideModal = () => {
-    setModal({ visible: false, name: "", id: "" })
+    setModal({ visible: false, listId: 0, listName: "" })
     listRow.map((row) => row.close())
   }
 
   const handleListNameChange = () => {
-    if (modal.id != "") {
-      const currentList = shoppingLists.find((list) => list.id === modal.id)
+    if (modal.listId !== 0) {
+      const currentList = lists.find((list) => list.id === modal.listId)
       if (currentList) {
-        currentList.name = modal.name
+        currentList.name = modal.listName
 
-        db.transaction(
-          async (tx) => {
-            await tx.executeSql("UPDATE shopList SET name = ? WHERE id = ?", [
-              currentList.name,
-              currentList.id
-            ])
-          },
-          (err) => console.log(err),
-          () =>
-            setShoppingLists((previousList) => [
-              ...previousList.filter((l) => l.id !== currentList.id),
-              currentList
-            ])
-        )
+        renameList(modal.listName, modal.listId)
       }
     } else {
-      db.transaction(
-        async (tx) => {
-          await tx.executeSql("INSERT INTO shopList (name) values (?)", [
-            modal.name
-          ])
-        },
-        (err) => console.log(err),
-        async () => await getShoppingLists()
-      )
+      createList(modal.listName)
     }
     hideModal()
   }
 
-  const deleteById = (id: string) => {
-    db.transaction(
-      (tx) => {
-        tx.executeSql(`DELETE FROM shopList WHERE id = ?;`, [id])
-      },
-      (err) => console.log(err),
-      () =>
-        setShoppingLists((previousList) => [
-          ...previousList.filter((l) => l.id !== id)
-        ])
-    )
+  const deleteById = (id: number) => {
+    deleteList(id)
   }
 
   const renderDeleteAction = () => {
@@ -109,7 +59,9 @@ export const ListSelector: React.FC = () => {
   const renderEditAction: React.FC<ListType> = ({ id, name }) => {
     return (
       <TouchableHighlight
-        onPressOut={() => setModal({ id, name, visible: true })}
+        onPressOut={() =>
+          setModal({ listId: id, listName: name, visible: true })
+        }
       >
         <List.Item
           title={""}
@@ -128,7 +80,7 @@ export const ListSelector: React.FC = () => {
       <FlatList
         showsVerticalScrollIndicator={false}
         keyExtractor={({ id }) => `list_${id}`}
-        data={shoppingLists}
+        data={lists}
         renderItem={({ item, index }) => {
           return (
             <>
@@ -165,17 +117,23 @@ export const ListSelector: React.FC = () => {
         }}
       />
       <ListNameModal
-        id={modal.id}
-        name={modal.name}
+        id={modal.listId}
+        name={modal.listName}
         visible={modal.visible}
         hideModal={hideModal}
         onChangeName={(newName) =>
-          setModal({ name: newName, id: modal.id, visible: modal.visible })
+          setModal({
+            listName: newName,
+            listId: modal.listId,
+            visible: modal.visible
+          })
         }
         onAccept={handleListNameChange}
       />
       <FloatingButton
-        onButtonPressed={() => setModal({ id: "", name: "", visible: true })}
+        onButtonPressed={() =>
+          setModal({ visible: true, listId: 0, listName: "" })
+        }
       />
     </SafeAreaView>
   )
