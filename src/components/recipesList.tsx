@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from "react"
 import { FlatList, SafeAreaView, TouchableOpacity } from "react-native"
+import { ActivityIndicator } from "react-native-paper"
+import { useRecipes } from "../hooks/useRecipes"
 import { Card } from "./card"
 import { Search } from "./search"
 import { styles } from "./styles"
@@ -10,28 +12,26 @@ export const RecipesList = ({
 }: {
   onGoToRecipe: (item: Recipe) => unknown
 }): JSX.Element => {
-  const [foodList, setList] = useState<Recipe[]>([])
+  const { foodList, isLoading, searchRecipe } = useRecipes()
   const [term, setTerm] = useState("")
 
-  useEffect(() => {
-    if (term === "") getRecipes()
-  }, [term])
-
-  const getRecipes = () => {
-    fetch("https://recetasserver.herokuapp.com/api/recipes")
-      .then((response) => response.json())
-      .then((data) => setList(data))
+  const handleChangeText = (text: string) => {
+    setTerm(text)
+    if (text === "") searchRecipe("")
   }
 
-  const handleSearch = () => {
-    fetch(`https://recetasserver.herokuapp.com/api/recipes/search/${term}`)
-      .then((response) => response.json())
-      .then((data) => setList(data))
-  }
+  const handleSearch = () => searchRecipe(term)
+
+  if (isLoading)
+    return <ActivityIndicator style={{ flex: 1, alignItems: "center" }} />
 
   return (
     <SafeAreaView style={styles.containerCenter}>
-      <Search term={term} onChangeSearch={setTerm} onTermSend={handleSearch} />
+      <Search
+        term={term}
+        onChangeSearch={handleChangeText}
+        onTermSend={handleSearch}
+      />
       <FlatList
         showsVerticalScrollIndicator={false}
         keyExtractor={({ _id }) => _id}

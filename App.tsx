@@ -8,7 +8,7 @@ import { AppRegistry } from "react-native"
 import { name as appName } from "./app.json"
 import { MainScreen } from "./src/screens/mainScreen"
 import { ShoppingListScreen } from "./src/screens/shoppingListScreen"
-import { useDatabase } from "./src/hooks/hooks"
+import { useDatabase } from "./src/hooks/useDatabase"
 import { ListsContextProvider } from "./src/context/ListsContext"
 
 function App() {
