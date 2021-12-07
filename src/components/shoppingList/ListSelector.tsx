@@ -6,9 +6,9 @@ import { Swipeable } from "react-native-gesture-handler"
 import { ListNameModal } from "./ListNameModal"
 import { FloatingButton } from "./floatingButton"
 import { useNavigation } from "@react-navigation/core"
-import { styles } from "./styles"
-import { List as ListType, ModalProps } from "./types"
-import { useLists } from "../hooks/useLists"
+import { styles } from "../styles"
+import { List as ListType, ModalProps } from "../types"
+import { useLists } from "../../hooks/useLists"
 
 export const ListSelector: React.FC = () => {
   const navigation = useNavigation()

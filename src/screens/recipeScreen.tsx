@@ -1,6 +1,6 @@
 import { RouteProp } from "@react-navigation/core"
 import React, { useState } from "react"
-import { Recipe } from "../components/recipe"
+import { Recipe } from "../components/recipe/recipe"
 import { Ingredient, Step } from "../components/types"
 
 type RecipeScreenProps = {

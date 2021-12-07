@@ -2,10 +2,10 @@ import React, { useState } from "react"
 import { Text, SafeAreaView, ScrollView } from "react-native"
 import { List, IconButton } from "react-native-paper"
 import { ListMenu } from "./listMenu"
-import { Ingredient, Step, List as ListType } from "./types"
-import { styles } from "./styles"
-import { useLists } from "../hooks/useLists"
-import { useListItems } from "../hooks/useListItems"
+import { Ingredient, Step, List as ListType } from "../types"
+import { styles } from "../styles"
+import { useLists } from "../../hooks/useLists"
+import { useListItems } from "../../hooks/useListItems"
 
 type RecipeProps = {
   ingredients: Array<Ingredient>

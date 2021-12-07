@@ -7,7 +7,7 @@ import {
   Portal,
   Provider
 } from "react-native-paper"
-import { styles } from "./styles"
+import { styles } from "../styles"
 
 type ListMenuProps = {
   isVisible: boolean

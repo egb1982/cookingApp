@@ -1,9 +1,9 @@
 import React from "react"
 import { View, Text, ImageBackground } from "react-native"
 import { Difficulty } from "./difficulty"
-import { bytesToBase64 } from "../convertBase64"
-import { Recipe } from "./types"
-import { styles } from "./styles"
+import { bytesToBase64 } from "../../convertBase64"
+import { Recipe } from "../types"
+import { styles } from "../styles"
 
 //TODO: find correct type for imageData
 

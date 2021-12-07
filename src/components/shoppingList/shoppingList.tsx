@@ -3,7 +3,7 @@ import React, { useState } from "react"
 import { SafeAreaView, ScrollView, StyleSheet } from "react-native"
 import { List, Button, TextInput } from "react-native-paper"
 import { Article } from "./article"
-import { useListItems } from "../hooks/useListItems"
+import { useListItems } from "../../hooks/useListItems"
 
 type ShoppingListProps = {
   route: RouteProp<{ params: { id: number } }, "params">

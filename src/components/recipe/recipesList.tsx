@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from "react"
 import { FlatList, SafeAreaView, TouchableOpacity } from "react-native"
 import { ActivityIndicator } from "react-native-paper"
-import { useRecipes } from "../hooks/useRecipes"
+import { useRecipes } from "../../hooks/useRecipes"
 import { Card } from "./card"
 import { Search } from "./search"
-import { styles } from "./styles"
-import { Recipe } from "./types"
+import { styles } from "../styles"
+import { Recipe } from "../types"
 
 export const RecipesList = ({
   onGoToRecipe

@@ -1,8 +1,8 @@
 import React from "react"
 import { List, Checkbox, Divider, Colors } from "react-native-paper"
 import { Swipeable } from "react-native-gesture-handler"
-import { Article as ArticleType } from "./types"
-import { styles } from "./styles"
+import { Article as ArticleType } from "../types"
+import { styles } from "../styles"
 
 type ArticleProps = {
   item: ArticleType
