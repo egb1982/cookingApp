@@ -37,13 +37,13 @@ export const Recipe: React.FC<RecipeProps> = ({
   const navigation = useNavigation()
 
   React.useLayoutEffect(() => {
-    console.log("Add button")
     navigation.setOptions({
-      headerRight: () => (
-        <Button icon="cart" onPress={saveAllArticles}>
-          Añadir ({ingredients.length})
-        </Button>
-      )
+      headerRight: () =>
+        ingredients && (
+          <Button icon="cart" onPress={saveAllArticles}>
+            Añadir ({ingredients?.length})
+          </Button>
+        )
     })
   }, [navigation, lists])
 
@@ -55,7 +55,6 @@ export const Recipe: React.FC<RecipeProps> = ({
 
   const checkDefaultList = () => {
     const recipeList = lists.find((l) => l.name === recipeName)
-    console.log(lists)
     if (recipeList) {
       setSelectedList(recipeList.id)
       setMenuLists(lists)

@@ -1,5 +1,4 @@
 import { StyleSheet } from "react-native"
-import { red600 } from "react-native-paper/lib/typescript/styles/colors"
 
 export const styles = StyleSheet.create({
   card: {
@@ -23,14 +22,19 @@ export const styles = StyleSheet.create({
     color: "#fff",
     textShadowColor: "#000",
     textShadowRadius: 2,
-    textShadowOffset: { width: 2, height: 2 }
+    textShadowOffset: { width: 2, height: 2 },
+    paddingLeft: 3
   },
   cardImage: {
     width: "100%",
     height: 150,
     justifyContent: "space-between",
-    paddingBottom: 3,
-    paddingLeft: 3
+    paddingBottom: 3
+  },
+  difficultyRow: {
+    flexDirection: "row",
+    paddingLeft: 4,
+    paddingBottom: 2
   },
   container: {
     backgroundColor: "#fff",

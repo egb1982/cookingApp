@@ -1,6 +1,7 @@
 import React from "react"
 import { StyleSheet, View } from "react-native"
 import { Avatar } from "react-native-paper"
+import { styles } from "../styles"
 
 export const Difficulty: React.FC<{ value: number }> = ({ value }) => {
   let color = "red"
@@ -11,7 +12,7 @@ export const Difficulty: React.FC<{ value: number }> = ({ value }) => {
   }
 
   return (
-    <View style={styles.container}>
+    <View style={styles.difficultyRow}>
       {[...Array(value)].map((element, index) => (
         <Avatar.Icon
           size={16}
@@ -23,9 +24,3 @@ export const Difficulty: React.FC<{ value: number }> = ({ value }) => {
     </View>
   )
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flexDirection: "row"
-  }
-})

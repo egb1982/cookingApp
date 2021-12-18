@@ -11,6 +11,7 @@ import { MainScreen } from "./src/screens/mainScreen"
 import { ShoppingListScreen } from "./src/screens/shoppingListScreen"
 import { useDatabase } from "./src/hooks/useDatabase"
 import { ListsContextProvider } from "./src/context/ListsContext"
+import { theme } from "./theme"
 
 function App() {
   const [index, setIndex] = React.useState(0)
@@ -29,7 +30,7 @@ function App() {
   if (isDBReady) {
     return (
       <ListsContextProvider>
-        <PaperProvider>
+        <PaperProvider theme={theme}>
           <BottomNavigation
             navigationState={{ index, routes }}
             onIndexChange={setIndex}

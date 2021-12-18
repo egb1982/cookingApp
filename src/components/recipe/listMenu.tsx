@@ -8,6 +8,7 @@ import {
   Provider
 } from "react-native-paper"
 import { styles } from "../styles"
+import { theme } from "../../../theme"
 
 type ListMenuProps = {
   isVisible: boolean
@@ -27,7 +28,7 @@ export const ListMenu: React.FC<ListMenuProps> = ({
   onCheckList
 }) => {
   return (
-    <Provider>
+    <Provider theme={theme}>
       <View>
         <Portal>
           <Dialog visible={isVisible} onDismiss={onDismissDialog}>
@@ -53,7 +54,7 @@ export const ListMenu: React.FC<ListMenuProps> = ({
               ))}
             </Dialog.Content>
             <Dialog.Actions>
-              <Button mode="contained" onPress={() => onAccept()}>
+              <Button mode="contained" onPress={onAccept}>
                 Aceptar
               </Button>
             </Dialog.Actions>

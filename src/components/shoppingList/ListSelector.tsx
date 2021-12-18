@@ -100,7 +100,7 @@ export const ListSelector: React.FC = () => {
                     left={(props) => (
                       <List.Icon
                         {...props}
-                        color={Colors.deepPurple500}
+                        color={Colors.green500}
                         icon="clipboard-list-outline"
                       />
                     )}

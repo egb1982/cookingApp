@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react"
+import React, { useState } from "react"
 import { FlatList, SafeAreaView, TouchableOpacity } from "react-native"
 import { ActivityIndicator } from "react-native-paper"
 import { useRecipes } from "../../hooks/useRecipes"
