@@ -15,7 +15,7 @@ export const Search: React.FC<searchProps> = ({
 }) => {
   return (
     <Searchbar
-      placeholder="Que te apetece?"
+      placeholder="Que cocinamos hoy?"
       onChangeText={onChangeSearch}
       onEndEditing={onTermSend}
       value={term}

@@ -73,7 +73,7 @@ export const ShoppingList: React.FC<ShoppingListProps> = ({ route }) => {
         <TextInput
           value={newArticle}
           onChangeText={(text) => setNewArticle(text)}
-          onEndEditing={() => handleNewArticle()}
+          onSubmitEditing={handleNewArticle}
           placeholder="Nuevo artículo"
           ref={(ref) => {
             textInput = ref

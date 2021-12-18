@@ -13,7 +13,7 @@ export const ShoppingListScreen: React.FC = () => {
         <Stack.Screen
           name="ShoppingLists"
           component={ListSelector}
-          options={{ title: "Listas de la compra" }}
+          options={{ title: "Mis listas" }}
         />
         <Stack.Screen
           name="List"

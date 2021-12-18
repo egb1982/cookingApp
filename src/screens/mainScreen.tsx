@@ -13,7 +13,7 @@ export const MainScreen: React.FC = () => {
         <Stack.Screen
           name="Home"
           component={RecipeListScreen}
-          options={{ title: "Libro de recetas" }}
+          options={{ title: "Mis recetas" }}
         />
         <Stack.Screen
           name="Recipe"

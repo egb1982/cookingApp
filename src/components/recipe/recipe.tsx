@@ -1,11 +1,12 @@
 import React, { useState } from "react"
 import { Text, SafeAreaView, ScrollView } from "react-native"
-import { List, IconButton } from "react-native-paper"
+import { List, IconButton, Button } from "react-native-paper"
 import { ListMenu } from "./listMenu"
-import { Ingredient, Step, List as ListType } from "../types"
+import { Ingredient, Step, List as ListType, Article } from "../types"
 import { styles } from "../styles"
 import { useLists } from "../../hooks/useLists"
 import { useListItems } from "../../hooks/useListItems"
+import { useNavigation } from "@react-navigation/core"
 
 type RecipeProps = {
   ingredients: Array<Ingredient>
@@ -27,20 +28,34 @@ export const Recipe: React.FC<RecipeProps> = ({
   recipeName
 }) => {
   const [visible, setVisible] = useState(false)
-  const [article, setArticle] = useState("")
+  const [articles, setArticles] = useState<string[]>([])
   const [menulists, setMenuLists] = useState<ListType[]>([])
   const [selectedList, setSelectedList] = useState(0)
   const { lists, createListAsync } = useLists()
   const { createListItem } = useListItems(selectedList)
 
-  const handleCartPress = (article: string) => {
+  const navigation = useNavigation()
+
+  React.useLayoutEffect(() => {
+    console.log("Add button")
+    navigation.setOptions({
+      headerRight: () => (
+        <Button icon="cart" onPress={saveAllArticles}>
+          Añadir ({ingredients.length})
+        </Button>
+      )
+    })
+  }, [navigation, lists])
+
+  const handleBasketPress = (article: string) => {
     checkDefaultList()
-    setArticle(article)
+    setArticles([article])
     showDialog()
   }
 
   const checkDefaultList = () => {
     const recipeList = lists.find((l) => l.name === recipeName)
+    console.log(lists)
     if (recipeList) {
       setSelectedList(recipeList.id)
       setMenuLists(lists)
@@ -55,13 +70,23 @@ export const Recipe: React.FC<RecipeProps> = ({
 
   const saveArticle = () => {
     if (selectedList === 0) {
-      createListAsync(recipeName).then((newListId) =>
-        createListItem(article, newListId)
-      )
+      createListAsync(recipeName).then((newListId) => {
+        articles.forEach((item) => {
+          createListItem(item, newListId!)
+        })
+      })
     } else {
-      createListItem(article, selectedList)
+      articles.forEach((item) => {
+        createListItem(item, selectedList)
+      })
     }
     hideDialog()
+  }
+
+  const saveAllArticles = () => {
+    checkDefaultList()
+    setArticles(ingredients.map((i) => `${i.name} (${i.quantity})`))
+    showDialog()
   }
 
   return (
@@ -83,9 +108,9 @@ export const Recipe: React.FC<RecipeProps> = ({
                     right={() => (
                       <IconButton
                         onPress={() =>
-                          handleCartPress(`${ingr.name} (${ingr.quantity})`)
+                          handleBasketPress(`${ingr.name} (${ingr.quantity})`)
                         }
-                        icon="cart"
+                        icon="basket-outline"
                       />
                     )}
                   />

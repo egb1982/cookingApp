@@ -14,11 +14,15 @@ export const useLists = () => {
   const refreshLists = () => database.getLists(setLists)
 
   const createList = (listName: string): void => {
-    return database.insertList(listName, () => refreshLists)
+    if (listName !== "" && listName !== undefined) {
+      return database.insertList(listName, () => refreshLists)
+    }
   }
 
   const createListAsync = async (listName: string) => {
-    return database.insertListAsync(listName, refreshLists)
+    if (listName !== "" && listName !== undefined) {
+      return database.insertListAsync(listName, refreshLists)
+    }
   }
 
   const deleteList = (listId: number): void => {

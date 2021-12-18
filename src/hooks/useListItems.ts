@@ -15,7 +15,14 @@ export const useListItems = (listId: number) => {
   }
 
   const createListItem = (itemName: string, listId: number) => {
-    database.insertArticle(itemName, listId, () => refreshListItems(listId))
+    if (
+      itemName !== "" &&
+      itemName !== undefined &&
+      listId > 0 &&
+      listId !== undefined
+    ) {
+      database.insertArticle(itemName, listId, () => refreshListItems(listId))
+    }
   }
 
   const changeItemCheck = (

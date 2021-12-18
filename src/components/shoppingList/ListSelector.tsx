@@ -12,7 +12,7 @@ import { useLists } from "../../hooks/useLists"
 
 export const ListSelector: React.FC = () => {
   const navigation = useNavigation()
-  const { lists, createList, renameList, deleteList } = useLists()
+  const { lists, createListAsync, renameList, deleteList } = useLists()
   const [modal, setModal] = useState<ModalProps>({
     visible: false,
     listId: 0,
@@ -35,7 +35,7 @@ export const ListSelector: React.FC = () => {
         renameList(modal.listName, modal.listId)
       }
     } else {
-      createList(modal.listName)
+      createListAsync(modal.listName)
     }
     hideModal()
   }
@@ -101,7 +101,7 @@ export const ListSelector: React.FC = () => {
                       <List.Icon
                         {...props}
                         color={Colors.deepPurple500}
-                        icon="basket"
+                        icon="clipboard-list-outline"
                       />
                     )}
                     right={(props) => (
