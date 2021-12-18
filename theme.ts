@@ -1,7 +1,5 @@
 import { DefaultTheme } from "react-native-paper"
 
-console.log(DefaultTheme.colors)
-
 export const theme = {
   ...DefaultTheme,
   roundness: 2,
