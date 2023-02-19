@@ -5,12 +5,14 @@ export const useRecipes = () => {
   const [foodList, setList] = useState<Recipe[]>([])
   const [isLoading, setIsLoading] = useState(true)
 
+  const RECIPES_URL = "https://recipesapi-9vt1.onrender.com"
+
   useEffect(() => {
     refreshRecipesList()
   }, [])
 
   const refreshRecipesList = () => {
-    fetch("https://recetasserver.herokuapp.com/api/recipes")
+    fetch(RECIPES_URL + "/api/recipes")
       .then((response) => response.json())
       .then((data) => {
         setList(data)
@@ -22,7 +24,7 @@ export const useRecipes = () => {
     setIsLoading(true)
     if (term === "") refreshRecipesList()
     else
-      fetch(`https://recetasserver.herokuapp.com/api/recipes/search/${term}`)
+      fetch(`${RECIPES_URL}/api/recipes/search/${term}`)
         .then((response) => response.json())
         .then((data) => {
           setIsLoading(false)
